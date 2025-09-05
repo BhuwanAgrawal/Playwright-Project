@@ -3,7 +3,7 @@ const {test,expect} = require('@playwright/test')
 
 test.use({viewport:{width:1536,height:695}})
 
-test.only("Login", async function({page}){
+test("Login", async function({page}){
 
 await page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
 

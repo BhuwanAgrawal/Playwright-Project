@@ -1,6 +1,23 @@
-[
+{
+    "loginPage":
     {
-        "username": "Admin",
-        "password": "admin123"
+        "url": "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login",
+        "validUser":
+        {
+            "username": "Admin",
+            "password": "admin123"
+        },
+        "invalidUser":
+        {
+            "username": "InvalidUser",
+            "password": "InvalidPass"
+        }
+    },
+    "dashboardPage":
+    {
+        "expectedTitle": "OrangeHRM",
+        "expectedUrl": "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index"
+
     }
-]
+
+}

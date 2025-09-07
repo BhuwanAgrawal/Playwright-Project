@@ -4,9 +4,10 @@
   "description": "This repository is created for Playwright",
   "main": "index.js",
   "scripts": {
+    "clean:allure": "rd /s /q allure-results && rd /s /q allure-report",
     "test": "npx playwright test",
     "allure:report": "npx allure generate ./allure-results -o ./allure-report --clean --single-file && npx allure open ./allure-report",
-    "test:allure": "npx playwright test --headed || npm run allure:report"
+    "test:allure": "npm run clean:allure & npx playwright test --headed & npm run allure:report"
   },
   "repository": {
     "type": "git",

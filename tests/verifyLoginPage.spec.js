@@ -1,37 +1,71 @@
-const {test, expect} = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 const testData = JSON.parse(JSON.stringify(require('../testData/testdata.json')));
-const {LoginPage} = require('../pages/loginPage.js');
+const { LoginPage } = require('../pages/loginPage.js');
+const { DashboardPage } = require('../pages/dashboardPage.js');
 
 test.describe('Verify Login Page', () => {
-    let loginPage;
-    test.beforeEach(async ({page}) => {
-        loginPage = new LoginPage(page);
-        await page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
-        await page.waitForLoadState('networkidle');
-        await page.setViewportSize({width: 1920, height: 1080});
-        await loginPage.loginToApplication(testData[0].username, testData[0].password);
+    let browserContext, page, loginPage;
 
+    test.beforeAll(async ({ browser }) => {
+        browserContext = await browser.newContext({ viewport: { width: 1620, height: 1080 } });
+        page = await browserContext.newPage();
+        loginPage = new LoginPage(page);
+        await page.goto(testData.loginPage.url);
+        await page.waitForLoadState('networkidle');
     });
-    test('Verify Login Page Title', async ({page}) => {
-        await expect(page).toHaveTitle('OrangeHRM');
+
+    test.afterAll(async () => {
+        await page.waitForLoadState('networkidle');
+        await browserContext.close();
     });
-    test('Verify Login Page URL', async ({page}) => {
-        await expect(page).toHaveURL('https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index');
-    }); 
-    test('Verify Login Page Logo', async ({page}) => {
-        const logo = page.locator("//img[@alt='company-branding']");
-        await expect(logo).toBeVisible();
+
+    test('should display all login page elements', async () => {
+        await expect(loginPage.username).toBeVisible();
+        await expect(loginPage.password).toBeVisible();
+        await expect(loginPage.loginButton).toBeVisible();
+        await expect(loginPage.forgotPasswordLink).toBeVisible();
     });
-    test('Verify Login Page Dashboard', async ({page}) => {
-        const dashboard = page.locator("//h6[text()='Dashboard']");
-        await expect(dashboard).toBeVisible();
+
+    test('should login successfully with valid credentials', async () => {
+        await loginPage.loginToApplication(testData.loginPage.validUser.username, testData.loginPage.validUser.password);
+        await expect(page).toHaveURL(testData.dashboardPage.expectedUrl);
     });
-    test('Verify Login Page Profile', async ({page}) => {
-        const profile = page.locator("//p[@class='oxd-userdropdown-name']");
-        await expect(profile).toBeVisible();
+
+    test('should show error for invalid credentials', async () => {
+        await loginPage.loginToApplication(testData.loginPage.invalidUser.username, testData.loginPage.invalidUser.password);
+        await expect(loginPage.invalidCredentialsError).toBeVisible();
+        await expect(loginPage.invalidCredentialsError).toHaveText("Invalid credentials");
     });
-    test('Verify Login Page Admin', async ({page}) => {
-        const admin = page.locator("//span[text()='Admin']");
-        await expect(admin).toBeVisible();
+
+    test('should show error for empty username and password', async () => {
+        await loginPage.loginToApplication('', '');
+        await expect(loginPage.emptyUsernameError).toBeVisible();
+        await expect(loginPage.emptyUsernameError).toHaveText("Required");
+        await expect(loginPage.emptyPasswordError).toBeVisible();
+        await expect(loginPage.emptyPasswordError).toHaveText("Required");
+    });
+
+    test('should show error for empty username', async () => {
+        await loginPage.loginToApplication('', testData.loginPage.validUser.password);
+        await expect(loginPage.emptyUsernameError).toBeVisible();
+        await expect(loginPage.emptyUsernameError).toHaveText("Required");
+        await expect(loginPage.emptyPasswordError).not.toBeVisible();
+    });
+
+    test('should show error for empty password', async () => {
+        await loginPage.loginToApplication(testData.loginPage.validUser.username, '');
+        const passwordErrorLocator = await loginPage.getEmptyPasswordErrorLocator();
+        await expect(passwordErrorLocator).toBeVisible();
+        await expect(passwordErrorLocator).toHaveText("Required");
+        const errors = page.locator("//span[text()='Required']");
+        await expect(await errors.count()).toBe(1);
+    });
+
+    test('should show error for whitespace username and password', async () => {
+        await loginPage.loginToApplication('   ', '   ');
+        await expect(loginPage.emptyUsernameError).toBeVisible();
+        await expect(loginPage.emptyUsernameError).toHaveText("Required");
+        await expect(loginPage.emptyPasswordError).toBeVisible();
+        await expect(loginPage.emptyPasswordError).toHaveText("Required");
     });
 });

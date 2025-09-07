@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "This repository is created for Playwright",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "npx playwright test",
+    "allure:report": "npx allure generate ./allure-results -o ./allure-report --clean --single-file && npx allure open ./allure-report",
+    "test:allure": "npx playwright test || npm run allure:report"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BhuwanAgrawal/Playwright-Learn.git"
@@ -17,6 +21,7 @@
   "homepage": "https://github.com/BhuwanAgrawal/Playwright-Learn#readme",
   "devDependencies": {
     "@playwright/test": "^1.55.0",
-    "@types/node": "^24.3.0"
+    "@types/node": "^24.3.0",
+    "allure-playwright": "^3.3.3"
   }
 }

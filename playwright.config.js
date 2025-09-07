@@ -28,7 +28,22 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  //reporter: 'html',
+  reporter: [ 
+  ["allure-playwright",
+    {
+        outputFolder: 'allure-results',
+        detail: true,
+        suiteTitle: true,
+        environmentInfo: 
+        {
+          "Browser": "Chromium",
+          "Browser.Version": "114.0.5735.199",
+          "OS": "Windows 11",
+          "Author": "Bhuwan Agrawal"
+        },
+    }
+  ]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */

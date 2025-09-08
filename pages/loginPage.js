@@ -19,8 +19,6 @@ class LoginPage {
     getEmptyPasswordErrorLocator = async () => {
         const errors = this.page.locator("//span[text()='Required']");
         const count = await errors.count();
-        // If both fields are empty, password error is at index 1 (second "Required")
-        // If only password is empty, it's at index 0 (first "Required")
         return count === 2 ? errors.nth(1) : errors.nth(0);
     }
 }

@@ -1,13 +1,13 @@
 class LoginPage {
     constructor(page) {
         this.page = page;
-        this.username = page.locator("//input[@placeholder='Username']");
-        this.password = page.locator("//input[@placeholder='Password']");
-        this.loginButton = page.locator("//button[text()=' Login ']");
-        this.forgotPasswordLink = page.locator("//p[text()='Forgot your password? ']");
-        this.invalidCredentialsError = page.locator("//p[text()='Invalid credentials']");
-        this.emptyUsernameError = page.locator("(//span[text()='Required'])[1]");
-        this.emptyPasswordError = page.locator("(//span[text()='Required'])[2]");
+        this.username = this.page.locator("//input[@placeholder='Username']");
+        this.password = this.page.locator("//input[@placeholder='Password']");
+        this.loginButton = this.page.locator("//button[text()=' Login ']");
+        this.forgotPasswordLink = this.page.locator("//p[text()='Forgot your password? ']");
+        this.invalidCredentialsError = this.page.locator("//p[text()='Invalid credentials']");
+        this.emptyUsernameError = this.page.locator("(//span[text()='Required'])[1]");
+        this.emptyPasswordError = this.page.locator("(//span[text()='Required'])[2]");
     }
 
     async loginToApplication(username, password) {
